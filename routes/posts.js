@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const checkLogin = require('../middlewares/check').checkLogin
 const PostModel = require('../models/posts')
+const CommentModel = require('../models/comments')
+
 // GET /posts 所有用户或者特定用户的文章页
 //   eg: GET /posts?author=xxx
 router.get('/', function (req, res, next) {
@@ -64,18 +66,19 @@ router.get('/:postId', function (req, res, next) {
   let comments = []
   Promise.all([
     PostModel.getPostById(postId),
+    CommentModel.getComments(postId),
     PostModel.incPv(postId)
   ])
     .then(function (result) {
       const post = result[0]
-      console.log(post)
+      comments = result[1]
       if (!post) {
         throw new Error('文章不存在')
       }
 
       res.render('post', {
         post: post,
-        comments
+        comments: comments
       })
     })
     .catch(next)
@@ -157,7 +160,7 @@ router.get('/:postId/remove', checkLogin, function (req, res, next) {
       if(post.author._id.toString() !== author.toString()){
         throw new Error('你没有权限')
       }
-      PostModel.delPostById(postId)
+      PostModel.delPostById(postId, author)
         .then(function () {
            req.flash('success', '删除文章成功')
            return res.redirect('/posts')
