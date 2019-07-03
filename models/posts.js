@@ -93,7 +93,7 @@ module.exports = {
       .exec()
       .then(function (res) {
         if(res.result.ok && res.result.n>0){
-          return CommentModel.delCommentById(postId)
+          return CommentModel.delCommentsByPostId(postId)
         }
        })
   }

@@ -29,6 +29,9 @@ module.exports = {
   },
   //通过文章id获取该文章下所有留言
   getComments(postId){
+    console.log(111111111)
+    console.log(Comment
+      .find({postId: postId}))
     return Comment
       .find({postId: postId})
       .populate({ path: 'author', model: 'User' })
