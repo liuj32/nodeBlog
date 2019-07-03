@@ -1,5 +1,5 @@
 const sha1 = require('sha1')
-const fs =require('fs')
+const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const router = express.Router()
@@ -43,7 +43,7 @@ router.post('/', checkNotLogin, function (req, res, next) {
     }
   } catch (e) {
     // 注册失败，异步删除上传的头像
-    fs.unlink(req.files.avatar.path)
+    fs.unlink(req.files.avatar.path, function () {  })
     req.flash('error', e.message)
     return res.redirect('/signup')
   }
@@ -75,7 +75,10 @@ router.post('/', checkNotLogin, function (req, res, next) {
     })
     .catch(function (e) {
       // 注册失败，异步删除上传的头像
-      fs.unlink(req.files.avatar.path)
+      fs.unlink(req.files.avatar.path, function (err) {
+        console.log(33333333)
+        console.log(err)
+       })
       // 用户名被占用则跳回注册页，而不是错误页
       if (e.message.match('duplicate key')) {
         req.flash('error', '用户名已被占用')
