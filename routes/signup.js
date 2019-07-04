@@ -32,18 +32,18 @@ router.post('/', checkNotLogin, function (req, res, next) {
     if (!(bio.length >= 1 && bio.length <= 30)) {
       throw new Error('个人简介请限制在 1-30 个字符')
     }
-    if (!req.files.avatar.name) {
-      throw new Error('缺少头像')
-    }
     if (password.length < 6) {
       throw new Error('密码至少 6 个字符')
     }
     if (password !== repassword) {
       throw new Error('两次输入密码不一致')
     }
+    if (!req.files.avatar.name) {
+      throw new Error('缺少头像')
+    }
   } catch (e) {
     // 注册失败，异步删除上传的头像
-    fs.unlink(req.files.avatar.path, function () {  })
+    //fs.unlink(req.files.avatar.path, function () {  })
     req.flash('error', e.message)
     return res.redirect('/signup')
   }
